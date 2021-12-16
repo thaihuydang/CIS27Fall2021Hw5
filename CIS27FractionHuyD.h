@@ -26,6 +26,8 @@ TFractionPtrHuyD addFraction(const TFractionPtrHuyD left,
 	const TFractionPtrHuyD right);
 TFractionPtrHuyD multiplyFraction(const TFractionPtrHuyD left,
 	const TFractionPtrHuyD right);
+TFractionPtrHuyD multiplyFraction(const TFractionPtrHuyD left,
+	int right);
 
 void displayFraction(const TFractionPtrHuyD current);
 

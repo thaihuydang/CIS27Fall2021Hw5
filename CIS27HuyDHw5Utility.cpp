@@ -8,6 +8,8 @@ void RunMenuHw5HuyD()
 	int optionHuyD = 0;
 	TPolyPtrHuyD Poly1HuyD=nullptr;
 	TPolyPtrHuyD Poly2HuyD=nullptr;
+	int n, d;
+	TFractionPtrHuyD myFraction;
 	printf("CIS 27 - Data Structures\n");
 	printf("Laney College\n");
 	printf("Huy Dang\n");
@@ -42,27 +44,20 @@ void RunMenuHw5HuyD()
 			runHw5submenuHuyD(Poly1HuyD, Poly2HuyD);
 			break;
 		case 2:
-			/*if (F1 && F2) {
-				printf(" Checking for Palindrome - \n");
-				if (isFractionPalindromeHuyD(*F1)) {
-					printf("  First Fraction: Yes\n");
-				}
-				else
-				{
-					printf("  First Fraction: No\n");
-				}
-				if (isFractionPalindromeHuyD(*F2)) {
-					printf("  Second Fraction: Yes\n");
-				}
-				else
-				{
-					printf("  Second Fraction: No\n");
-				}
+			if (Poly1HuyD && Poly2HuyD) {
+				printf("Evaluating Polynomials -\n");
+				printf("Enter the value (Fraction) to be evaluated with -\n");
+				printf("num: ");
+				scanf("%d", &n);
+				printf(" denom: ");
+				scanf("%d", &d);
+				myFraction = { n,d };
+
 			}
 			else
 			{
 				printf("\n  Not appropriate as there are no Fraction objects! \n");
-			}*/
+			}
 
 			break;
 		case 3:
@@ -131,6 +126,7 @@ void RunMenuHw5HuyD()
 void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 	int optionHuyD = 0;
 	int optionterm = -1;
+	int optionupdate;
 	int exp, n, d;
 	int term=1;
 	TPolyTermNodePtrHuyD Temp;
@@ -220,14 +216,43 @@ void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 		case 2:
 			if (F1) {
 				printf("   Updating Polynomial #1 --\n");
-				printf("\n");
-				printf("*************************************\n");
-				printf("*         update() Submenu          * \n");
-				printf("* (1) Adding one term               *\n");
-				printf("* (2) Removing one term             *\n");
-				printf("* (3) Displaying updated Polynomial *\n");
-				printf("* (4) Return                        *\n");
-				printf("*************************************\n");
+				do
+				{
+					
+					printf("\n");
+					printf("*************************************\n");
+					printf("*         update() Submenu          *\n");
+					printf("* (1) Adding one term               *\n");
+					printf("* (2) Removing one term             *\n");
+					printf("* (3) Displaying updated Polynomial *\n");
+					printf("* (4) Return                        *\n");
+					printf("*************************************\n");
+					printf("  Enter an integer for option + ENTER:");
+					scanf_s("%d", &optionupdate);
+					switch (optionupdate)
+					{
+					case 1:
+						printf("      Adding 1 term-\n");
+						printf("       Enter expo:");
+						scanf_s("%d", &exp);
+						printf("       Creating coeff Fraction:\n");
+						printf("        Enter Num:");
+						scanf_s("%d", &n);
+						printf("        Enter denom:");
+						scanf_s("%d", &d);
+						updatePolyTerm(exp, n, d, NewPolyterm);
+						insertTermToPoly(NewPolyterm, &F1);
+						break;
+
+					case 3:
+						DisplayPolynomial(F1);
+						break;
+					default:
+						printf("Wrong option!");
+					}
+
+
+				} while (optionupdate!=4);
 
 			}
 			else
@@ -260,7 +285,7 @@ void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 		case 4:
 			printf("Displaying 2 Polynomials -\n");
 			printf(" Poly #1\n");
-			printf("  Address: %p\n", F1);
+			/*printf("  Address: %p\n", F1);
 			printf("  Degree: %d\n", (*F1).degreeHuyD);
 			printf("  Number of Term: %d\n", (*F1).numTermHuyD);
 			Temp = F1->polyListPtrHuyD;
@@ -275,25 +300,31 @@ void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 				printf("      denom: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->denom);
 				Temp = Temp->next;
 				term++;
-			}
-			term = 1;
-			printf("\n Poly #2\n");
-			printf("  Address: %p\n", F2);
-			printf("  Degree: %d\n", (*F2).degreeHuyD);
-			printf("  Number of Term: %d\n", (*F2).numTermHuyD);
-			Temp = F2->polyListPtrHuyD;
-			while (Temp)
-			{
+			}*/
+			DisplayPolynomial(F1);
 
-				printf("   Term # %d\n", term);
-				printf("    Address %p\n", Temp->polyTermPtrHuyD);
-				printf("    Expo %p\n", Temp->polyTermPtrHuyD->expoHuyD);
-				printf("     Coefficient \n");
-				printf("      num: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->num);
-				printf("      denom: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->denom);
-				Temp = Temp->next;
-				term++;
+			term = 1;
+			if (F2) 
+			{
+				printf("\n Poly #2\n");
+				printf("  Address: %p\n", F2);
+				printf("  Degree: %d\n", (*F2).degreeHuyD);
+				printf("  Number of Term: %d\n", (*F2).numTermHuyD);
+				Temp = F2->polyListPtrHuyD;
+				while (Temp)
+				{
+
+					printf("   Term # %d\n", term);
+					printf("    Address %p\n", Temp->polyTermPtrHuyD);
+					printf("    Expo %p\n", Temp->polyTermPtrHuyD->expoHuyD);
+					printf("     Coefficient \n");
+					printf("      num: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->num);
+					printf("      denom: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->denom);
+					Temp = Temp->next;
+					term++;
+				}
 			}
+			
 			break;
 		case 5:
 			printf("  Returning to previous menu!");
@@ -303,4 +334,25 @@ void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 			break;
 		}
 	} while (optionHuyD != 5);
+}
+void DisplayPolynomial(TPolyPtrHuyD F1) {
+	TPolyTermNodePtrHuyD Temp;
+	int term = 1;
+	printf("  Address: %p\n", F1);
+	printf("  Degree: %d\n", (*F1).degreeHuyD);
+	printf("  Number of Term: %d\n", (*F1).numTermHuyD);
+	Temp = F1->polyListPtrHuyD;
+	while (Temp)
+	{
+
+		printf("   Term # %d\n", term);
+		printf("    Address %p\n", Temp->polyTermPtrHuyD);
+		printf("    Expo %d\n", Temp->polyTermPtrHuyD->expoHuyD);
+		printf("     Coefficient \n");
+		printf("      num: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->num);
+		printf("      denom: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->denom);
+		Temp = Temp->next;
+		term++;
+	}
+	
 }
