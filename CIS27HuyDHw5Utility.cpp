@@ -8,8 +8,15 @@ void RunMenuHw5HuyD()
 	int optionHuyD = 0;
 	TPolyPtrHuyD Poly1HuyD=nullptr;
 	TPolyPtrHuyD Poly2HuyD=nullptr;
+	TPolyPtrHuyD PolyResult = nullptr;
+	TPolyListPtrHuyD MynodePolyTerm;
+
 	int n, d;
-	TFractionPtrHuyD myFraction;
+	TFractionPtrHuyD XFraction;
+	TFractionPtrHuyD MyResultFraction=nullptr;
+	TFractionPtrHuyD Temp;
+	int expo;
+	bool flag = true;
 	printf("CIS 27 - Data Structures\n");
 	printf("Laney College\n");
 	printf("Huy Dang\n");
@@ -24,7 +31,7 @@ void RunMenuHw5HuyD()
 	do {
 		printf("\n");
 		printf("****************************************\n");
-		printf("*           MENU – HW #5                *\n");
+		printf("*           MENU - HW #5                *\n");
 		printf("* (1) Creating / Updating 2 Polynomials *\n");
 		printf("* (2) Evaluating 2 Polynomials          *\n");
 		printf("* (3) Checking for Palindrome           *\n");
@@ -39,82 +46,196 @@ void RunMenuHw5HuyD()
 		switch (optionHuyD)
 		{
 		case 1:
-			printf(" Initializing 2 Polynomials –");
-			printf("Calling init() -");
+			printf(" Initializing 2 Polynomials -\n");
+			printf("  Calling init() -\n");
 			runHw5submenuHuyD(Poly1HuyD, Poly2HuyD);
 			break;
 		case 2:
 			if (Poly1HuyD && Poly2HuyD) {
-				printf("Evaluating Polynomials -\n");
-				printf("Enter the value (Fraction) to be evaluated with -\n");
-				printf("num: ");
-				scanf("%d", &n);
-				printf(" denom: ");
-				scanf("%d", &d);
-				myFraction = { n,d };
+				printf(" Evaluating Polynomials -\n");
+				printf(" Enter the value (Fraction) to be evaluated with -\n");
+				printf("  num: ");
+				scanf_s("%d", &n);
+				printf("  denom: ");
+				scanf_s("%d", &d);
+			
+				XFraction = createFraction(n, d);
+				
+				MynodePolyTerm = (Poly1HuyD)->polyListPtrHuyD;
+				while (MynodePolyTerm)
+				{
+					if (MynodePolyTerm->polyTermPtrHuyD->expoHuyD)
+					{
+						
+						Temp = multiplyFractionExpo(XFraction, 
+							MynodePolyTerm->polyTermPtrHuyD->expoHuyD);
+						Temp = multiplyFraction(Temp, MynodePolyTerm->polyTermPtrHuyD->coeffPtrHuyD);
+						if (MyResultFraction) {
+							MyResultFraction = addFraction(MyResultFraction, Temp);
+						}
+						else
+						{
+							MyResultFraction = (TFractionPtrHuyD)malloc(sizeof(TFractionHuyD));
+							MyResultFraction->num = Temp->num;
+							MyResultFraction->denom = Temp->denom;
+						}
+						
+					}
+					else
+					{
+						if (MyResultFraction) {
+							MyResultFraction = addFraction(MyResultFraction,
+								MynodePolyTerm->polyTermPtrHuyD->coeffPtrHuyD);
+						}
+						else
+						{
+							MyResultFraction = (TFractionPtrHuyD)malloc(sizeof(TFractionHuyD));
+							MyResultFraction->num = MynodePolyTerm->
+								polyTermPtrHuyD->coeffPtrHuyD->num;
+							MyResultFraction->denom = MynodePolyTerm->
+								polyTermPtrHuyD->coeffPtrHuyD->denom;
+						}
+						
+					}
+					MynodePolyTerm = MynodePolyTerm->next;
+				}
+				CheckFraction(MyResultFraction);
+				printf("  Poly #1 at x (%d/%d) = (%d/%d)\n",XFraction->num,
+					XFraction->denom, MyResultFraction->num, 
+					MyResultFraction->denom);
+				free(MyResultFraction);
+				MyResultFraction = nullptr;
+				MynodePolyTerm = (Poly2HuyD)->polyListPtrHuyD;
+				while (MynodePolyTerm)
+				{
+					if (MynodePolyTerm->polyTermPtrHuyD->expoHuyD)
+					{
+
+						Temp = multiplyFractionExpo(XFraction,
+							MynodePolyTerm->polyTermPtrHuyD->expoHuyD);
+						Temp = multiplyFraction(Temp, MynodePolyTerm->polyTermPtrHuyD->coeffPtrHuyD);
+						if (MyResultFraction) {
+							MyResultFraction = addFraction(MyResultFraction, Temp);
+						}
+						else
+						{
+							MyResultFraction = (TFractionPtrHuyD)malloc(sizeof(TFractionHuyD));
+							MyResultFraction->num = Temp->num;
+							MyResultFraction->denom = Temp->denom;
+						}
+
+					}
+					else
+					{
+						if (MyResultFraction) {
+							MyResultFraction = addFraction(MyResultFraction,
+								MynodePolyTerm->polyTermPtrHuyD->coeffPtrHuyD);
+						}
+						else
+						{
+							MyResultFraction = (TFractionPtrHuyD)malloc(sizeof(TFractionHuyD));
+							MyResultFraction->num = MynodePolyTerm->
+								polyTermPtrHuyD->coeffPtrHuyD->num;
+							MyResultFraction->denom = MynodePolyTerm->
+								polyTermPtrHuyD->coeffPtrHuyD->denom;
+						}
+
+					}
+					MynodePolyTerm = MynodePolyTerm->next;
+				}
+				CheckFraction(MyResultFraction);
+				printf("  Poly #2 at x (%d/%d) = (%d/%d)\n",XFraction->num,
+					XFraction->denom, MyResultFraction->num, 
+					MyResultFraction->denom);
+				free(MyResultFraction);
+				MyResultFraction = nullptr;
 
 			}
 			else
 			{
 				printf("\n  Not appropriate as there are no Fraction objects! \n");
 			}
-
 			break;
 		case 3:
-			/*if (F1 && F2)
-			{
-				if (!F3) {
-					F3 = (TFraction*)malloc(sizeof(TFraction));
+			if (Poly1HuyD && Poly2HuyD) {
+				printf(" Checking for Palindrome - \n");
+				MynodePolyTerm = Poly1HuyD->polyListPtrHuyD;
+				while (MynodePolyTerm)
+				{
+					if (!isFractionPalindromeHuyD(MynodePolyTerm->polyTermPtrHuyD->coeffPtrHuyD)) {
+						printf("\n    Poly #1 not palinrom\n");
+						flag = false;
+						break;
+					}
+					MynodePolyTerm = MynodePolyTerm->next;
+				}
+				if (flag) {
+					printf("\n    Poly #1 is palindrome\n");
+				}
+				flag = true;
+				MynodePolyTerm = Poly2HuyD->polyListPtrHuyD;
+				while (MynodePolyTerm)
+				{
+					if (!isFractionPalindromeHuyD(MynodePolyTerm->
+						polyTermPtrHuyD->coeffPtrHuyD)) {
+						printf("\n    Poly #2 not palindrome\n");
+						flag = false;
+						break;
+					}
+					MynodePolyTerm = MynodePolyTerm->next;
+				}
+				if (flag) {
+					printf("\n    Poly #2 is palindrome\n");
 				}
 
-				runHw3ArithmeticmenuHuyD(*F1, *F2, F3);
 			}
 			else
 			{
-				printf("\n You have to input for 2 Fraction first!\n");
-			}*/
-
-
+				printf("\n  Not appropriate as there are no Polynomial objects! \n");
+			}
 			break;
 		case 4:
-			/*if (F1 && F2) {
-				printf(" Displaying Fraction Objects - \n");
-				printf("  First Object -- \n");
-				printf("   Address: %p \n", F1);
-				printf("   num: %d \n", F1->num);
-				printf("   denom: %d\n", F1->denom);
-				printf("\n  Second Object -- \n");
-				printf("   Address: %p\n", F2);
-				printf("   num: %d\n", F2->num);
-				printf("   denom: %d\n", F2->denom);
-				printf("\n  Resulting Object -- \n");
-				if (F3) {
-					printf("   Address: %p\n", F3);
-					printf("   num: %d\n", F3->num);
-					printf("   denom: %d\n", F3->denom);
-				}
-				else
-				{
-					printf("   Not Existing!");
-				}
-
+			if (Poly1HuyD && Poly2HuyD) {
+				printf(" Adding 2 Polynomials - ");
+				PolyResult = addTwoPoly(Poly1HuyD, Poly2HuyD);
 			}
 			else
 			{
 				printf("\n Cannot choose this option as there are no"
-					"Fraction objects!\n");
-			}*/
+					"Polynomial objects!\n");
+			}
 
 			break;
 		case 5:
-			/*free(F1);
-			F1 = nullptr;
-			free(F2);
-			F2 = nullptr;*/
-			/*free(F3);
-			F3 = nullptr;*/
-			printf("\nHave fun!");
+			if (Poly1HuyD && Poly2HuyD) {
+				printf(" Multiply 2 Polynomials - ");
+				PolyResult = multiplyTwoPoly(Poly1HuyD, Poly2HuyD);
+			}
+			else
+			{
+				printf("\n Cannot choose this option as there are no"
+					"Polynomial objects!\n");
+			}
 
+			break;
+		case 6:
+			if ((PolyResult)) {
+				printf("  Displaying the resulting Polynomial -\n");
+				printf("    Address: %p\n", PolyResult);
+				printf("    Degree: %d\n", PolyResult->degreeHuyD);
+				printf("    Number of Terms: %d\n", PolyResult->degreeHuyD);
+			}
+			else 
+			{
+				printf(" Not appropriate as there are no Polynomials!");
+			}
+			break;
+		
+		case 7:
+			DisplayPolynomial(PolyResult);
+			break;
+		case 8:
+			printf("Have fun!");
 			break;
 		default:
 			printf("\nWRONG OPTION!\n");
@@ -123,12 +244,14 @@ void RunMenuHw5HuyD()
 	} while (optionHuyD != 8);
 
 }
-void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
+void runHw5submenuHuyD(TPolyPtrHuyD& F1, TPolyPtrHuyD& F2) {
 	int optionHuyD = 0;
 	int optionterm = -1;
+	int optionexpo;
 	int optionupdate;
 	int exp, n, d;
 	int term=1;
+	TFractionHuyD* FractionTemp = nullptr;
 	TPolyTermNodePtrHuyD Temp;
 	TPolyTermPtrHuyD NewPolyterm=(TPolyTermPtrHuyD)malloc(sizeof(PolyTermHuyD)) ;
 	do {
@@ -151,8 +274,7 @@ void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 				printf("\n   Polynimials Objects exist -- Choose Update or Quit! \n");
 			}
 			else {
-				/*F1 = (PolyHuyD*)malloc(sizeof(PolyHuyD));
-				F2 = (PolyHuyD*)malloc(sizeof(PolyHuyD));*/
+				
 				printf("   Creating 2 Polynomials --\n");
 				printf("    Calling create() --\n");
 				printf("     Creating Poly #1\n");
@@ -171,9 +293,18 @@ void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 						scanf_s("%d", &n);
 						printf("        Enter denom:");
 						scanf_s("%d", &d);
-						updatePolyTerm(exp, n, d,NewPolyterm);
+						FractionTemp = (TFractionHuyD*)malloc(sizeof(TFractionHuyD));
+						/*FractionTemp = createFraction(n, d);*/
+						FractionTemp->num = n;
+						FractionTemp->denom = d;
+						CheckFraction(FractionTemp);
+						updatePolyTerm(exp, FractionTemp->num,
+							FractionTemp->denom, NewPolyterm);
+						/*F1 = (TPolyPtrHuyD*)malloc(sizeof(TPolyPtrHuyD));*/
 						insertTermToPoly(NewPolyterm, &F1);
-
+						free(FractionTemp);
+						FractionTemp = nullptr;
+						break;
 					case 0:
 						break;
 					default:
@@ -199,10 +330,19 @@ void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 						scanf_s("%d", &n);
 						printf("       Enter denom:");
 						scanf_s("%d", &d);
-						updatePolyTerm(exp, n, d, NewPolyterm);
+						FractionTemp = (TFractionHuyD*)malloc(sizeof(TFractionHuyD));
+						/*FractionTemp = createFraction(n, d);*/
+						FractionTemp->num = n;
+						FractionTemp->denom = d;
+						CheckFraction(FractionTemp);
+						updatePolyTerm(exp, FractionTemp->num, 
+							FractionTemp->denom, NewPolyterm);
 						insertTermToPoly(NewPolyterm, &F2);
-
+						free(FractionTemp);
+						FractionTemp = nullptr;
+						break;
 					case 0:
+						
 						break;
 					default:
 						printf("Wrong option!");
@@ -240,13 +380,23 @@ void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 						scanf_s("%d", &n);
 						printf("        Enter denom:");
 						scanf_s("%d", &d);
+						FractionTemp = (TFractionHuyD*)malloc(sizeof(TFractionHuyD));
+						/*FractionTemp = createFraction(n, d);*/
+						FractionTemp->num = n;
+						FractionTemp->denom = d;
+						CheckFraction(FractionTemp);
 						updatePolyTerm(exp, n, d, NewPolyterm);
 						insertTermToPoly(NewPolyterm, &F1);
+						free(FractionTemp);
+						FractionTemp = nullptr;
 						break;
 
 					case 3:
 						DisplayPolynomial(F1);
 						break;
+						case 4:
+							printf("  Return to previous menu!\n");
+							break;
 					default:
 						printf("Wrong option!");
 					}
@@ -260,70 +410,20 @@ void runHw5submenuHuyD(TPolyPtrHuyD F1, TPolyPtrHuyD F2) {
 				printf("\n  Not appropriate as there are no Fraction objects!\n");
 			}
 			break;
-		/*case 3:
-			if (F2)
-			{
-				printf("\n     Second Fraction:\n");
-				printf("      Enter an int for num:");
-				scanf_s_s("%d", &F2->num);
-				do
-				{
-					printf("      Enter an int for denom:");
-					scanf_s_s("%d", &F2->denom);
-					if (F2->denom == 0) {
-						printf("       0 is not allowed!\n");
-					}
+		case 4:
+			if (F1 && F2) {
+				printf("Displaying 2 Polynomials -\n");
+				printf(" Poly #1\n");
 
-				} while (!CheckNumbernotZero(F2->denom));
-				CheckFraction(F2);
+				DisplayPolynomial(F1);
+				printf(" Poly #2\n");
+				DisplayPolynomial(F2);
 			}
 			else
 			{
-				printf("\n  Not appropriate as there are no Fraction objects!\n");
+				printf("  Wrong option!\n");
 			}
-			break;*/
-		case 4:
-			printf("Displaying 2 Polynomials -\n");
-			printf(" Poly #1\n");
-			/*printf("  Address: %p\n", F1);
-			printf("  Degree: %d\n", (*F1).degreeHuyD);
-			printf("  Number of Term: %d\n", (*F1).numTermHuyD);
-			Temp = F1->polyListPtrHuyD;
-			while (Temp)
-			{
-				
-				printf("   Term # %d\n", term);
-				printf("    Address %p\n", Temp->polyTermPtrHuyD);
-				printf("    Expo %p\n", Temp->polyTermPtrHuyD->expoHuyD);
-				printf("     Coefficient \n");
-				printf("      num: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->num);
-				printf("      denom: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->denom);
-				Temp = Temp->next;
-				term++;
-			}*/
-			DisplayPolynomial(F1);
-
-			term = 1;
-			if (F2) 
-			{
-				printf("\n Poly #2\n");
-				printf("  Address: %p\n", F2);
-				printf("  Degree: %d\n", (*F2).degreeHuyD);
-				printf("  Number of Term: %d\n", (*F2).numTermHuyD);
-				Temp = F2->polyListPtrHuyD;
-				while (Temp)
-				{
-
-					printf("   Term # %d\n", term);
-					printf("    Address %p\n", Temp->polyTermPtrHuyD);
-					printf("    Expo %p\n", Temp->polyTermPtrHuyD->expoHuyD);
-					printf("     Coefficient \n");
-					printf("      num: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->num);
-					printf("      denom: %d\n", Temp->polyTermPtrHuyD->coeffPtrHuyD->denom);
-					Temp = Temp->next;
-					term++;
-				}
-			}
+			
 			
 			break;
 		case 5:
@@ -339,10 +439,10 @@ void DisplayPolynomial(TPolyPtrHuyD F1) {
 	TPolyTermNodePtrHuyD Temp;
 	int term = 1;
 	printf("  Address: %p\n", F1);
-	printf("  Degree: %d\n", (*F1).degreeHuyD);
-	printf("  Number of Term: %d\n", (*F1).numTermHuyD);
+	printf("  Degree: %d\n", F1->degreeHuyD);
+	printf("  Number of Term: %d\n", F1->numTermHuyD);
 	Temp = F1->polyListPtrHuyD;
-	while (Temp)
+	while (Temp && Temp->polyTermPtrHuyD)
 	{
 
 		printf("   Term # %d\n", term);
@@ -356,3 +456,81 @@ void DisplayPolynomial(TPolyPtrHuyD F1) {
 	}
 	
 }
+bool isFractionPalindromeHuyD(TFractionPtrHuyD F1)
+{
+	if (CheckNumberPalindromeHuyD(F1->num) && CheckNumberPalindromeHuyD(F1->denom)) {
+		return true;
+	}
+	return false;
+}
+bool CheckNumberPalindromeHuyD(int number)
+{
+	int* array;
+	int count = 0;
+	int mynumbertocount = 0;
+	int tempcount = 0;
+
+	if (number < 0) {
+		number = -number;
+	}
+	mynumbertocount = number;
+	while (mynumbertocount > 0)
+	{
+		count++;
+		mynumbertocount = mynumbertocount / 10;
+	}
+	array = new int[count];
+	while (number > 0)
+	{
+		int temp = number % 10;
+		array[tempcount] = temp;
+		tempcount++;
+		number = number / 10;
+	}
+	for (int i = 0; i < count / 2; i++) {
+		if (array[i] != array[count - 1 - i])
+		{
+			delete[] array;
+			array = nullptr;
+			return false;
+		} // if    
+	}
+	delete[] array;
+	array = nullptr;
+	return true;
+}
+void CheckFraction(TFractionHuyD* F1) {
+	int number = 0;
+	if ((F1->denom < 0 && F1->num < 0) || (F1->num > 0 && F1->denom < 0)) {
+		F1->denom = -F1->denom;
+		F1->num = -F1->num;
+	}
+
+	number = CalculatenumbergccdHuyD(F1->num, F1->denom);
+	F1->num = F1->num / number;
+	F1->denom = F1->denom / number;
+}
+int CalculatenumbergccdHuyD(int number1HuyD, int number2HuyD)
+{
+	if (number1HuyD < 0) {
+		number1HuyD = -number1HuyD;
+	}
+	if (number1HuyD && number2HuyD && number1HuyD > number2HuyD) {
+		number1HuyD = number1HuyD % number2HuyD;
+		CalculatenumbergccdHuyD(number1HuyD, number2HuyD);
+	}
+	else if (number1HuyD < number2HuyD && number1HuyD && number2HuyD)
+	{
+		number2HuyD = number2HuyD % number1HuyD;
+		CalculatenumbergccdHuyD(number1HuyD, number2HuyD);
+	}
+	else if (number2HuyD == 0) {
+		return number1HuyD;
+	}
+	else
+	{
+		return number2HuyD;
+	}
+
+}
+

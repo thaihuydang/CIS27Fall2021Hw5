@@ -1,3 +1,9 @@
+/*
+* Program Name: cis27Fall2021Hw5
+* Discussion: Hw5
+* Written by: Huy Dang
+* Date: 2021/12/19
+*/
 #pragma once
 #ifndef CIS27HuyDPOLY_H 
 #define CIS27HuyDPOLY_H 
